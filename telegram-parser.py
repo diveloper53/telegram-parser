@@ -47,13 +47,13 @@ async def get_messages(client, entity, limit):
                     'last_name': sender.last_name,
                     'username': sender.username
                 }
-                # Получение номера телефона отправителя (если доступно)
+                # Get user phone number if allowed
                 phone_number = None
                 if sender.phone:
                     phone_number = sender.phone
                 message_data['sender_phone_number'] = phone_number
                 
-        # Извлечение упомянутых пользователей
+        # Get mentioned users
         if message.entities:
             mentioned_users = []
             for entity in message.entities:
@@ -70,9 +70,9 @@ async def get_messages(client, entity, limit):
     return messages
 
 async def main(client):
-    entity_type = input("Выберите тип (1 - Чат, 2 - Канал): ")
-    entity_id = input("Введите ID чата или канала: ")
-    limit = int(input("Введите лимит сообщений: "))
+    entity_type = input("Select type (1 - Chat/Group, 2 - Channel): ")
+    entity_id = input("Enter ID of chat or channel (you can get it from https://web.telegram.org/a/ from your browser address bar, remove minus if u getting an error): ")
+    limit = int(input("Enter messages limit: "))
 
     entity = None
     if entity_type == '1':
@@ -82,19 +82,25 @@ async def main(client):
 
     messages = await get_messages(client, entity, limit)
     
-    save_format = input("Выберите формат сохранения (1 - JSON, 2 - XML, 3 - TXT): ")
+    save_format = input("Select saving format (1 - JSON, 2 - XML, 3 - TXT, 0 - ALL OF THEM): ")
     if save_format == '1':
         save_messages_to_json(messages)
     elif save_format == '2':
         save_messages_to_xml(messages)
     elif save_format == '3':
         save_messages_to_txt(messages)
+    elif save_format == '0':
+        save_messages_to_json(messages)
+        save_messages_to_xml(messages)
+        save_messages_to_txt(messages)
 
-    print("Сообщения сохранены в файл.")
+    print("Saved!")
 
-api_id = input("Введите ID вашего приложения: ")
-api_hash = input("Введите хеш вашего приложения: ")
-phone_number = input("Введите ваш номер телефона в формате +XXXXXXXXXXX: ")
+print("To start your work with telegram parser go to https://my.telegram.org/ and log in and select API Developement Tools, then provide api_id and api_hash from it.")
+
+api_id = input("Enter your api_id: ")
+api_hash = input("Enter your api_hash: ")
+phone_number = input("Now please enter your phone number in international format (example: +1234567890): ")
 
 client = TelegramClient('session_name', api_id, api_hash)
 client.start(phone_number)
