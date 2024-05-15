@@ -28,6 +28,7 @@ def save_messages_to_txt(messages):
         file.write(text)
 
 async def get_messages(client, entity, limit):
+    print('Parsing... Please wait...')
     result = await client.get_messages(entity, limit=limit)
 
     messages = []
@@ -66,6 +67,8 @@ async def get_messages(client, entity, limit):
             message_data['mentioned_users'] = mentioned_users
 
         messages.append(message_data)
+
+    print('Parsing finished!')
 
     return messages
 
